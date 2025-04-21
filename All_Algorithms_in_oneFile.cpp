@@ -207,6 +207,61 @@ void selectionSortRecursive(vector<double>& arr, int start = 0)
     selectionSortRecursive(arr, start + 1);
 }
 
+// ========== Quick Sort ==========
+int partition(vector<double>& arr, int low, int high)
+{
+    double pivot = arr[high];
+    int i = low - 1;
+
+    for (int j = low; j < high; j++)
+    {
+        if (arr[j] <= pivot)
+        {
+            i++;
+            swap(arr[i], arr[j]);
+        }
+    }
+    swap(arr[i + 1], arr[high]);
+    return i + 1;
+}
+
+void quickSortIterative(vector<double>& arr, int low, int high)
+{
+    stack<int> s;
+    s.push(low);
+    s.push(high);
+
+    while (!s.empty())
+    {
+        high = s.top(); s.pop();
+        low = s.top(); s.pop();
+
+        int pi = partition(arr, low, high);
+
+        if (pi - 1 > low)
+        {
+            s.push(low);
+            s.push(pi - 1);
+        }
+
+        if (pi + 1 < high)
+        {
+            s.push(pi + 1);
+            s.push(high);
+        }
+    }
+}
+
+void quickSortRecursive(vector<double>& arr, int low, int high)
+{
+    if (low < high)
+    {
+        int pi = partition(arr, low, high);
+        quickSortRecursive(arr, low, pi - 1);
+        quickSortRecursive(arr, pi + 1, high);
+    }
+}
+
 // ========== linear Search ==========
 
 // (Iterative)
@@ -333,7 +388,9 @@ int main()
         {"Iterative Selection Sort", [](vector<double>& arr){ selectionSortIterative(arr); }},
         {"Recursive Selection Sort", [](vector<double>& arr){ selectionSortRecursive(arr); }},
         {"Iterative Bubble Sort", [](vector<double>& arr){ bubbleSortIterative(arr.data(), arr.size()); }},
-        {"Recursive Bubble Sort", [](vector<double>& arr){ bubbleSortRecursive(arr.data(), arr.size()); }}
+        {"Recursive Bubble Sort", [](vector<double>& arr){ bubbleSortRecursive(arr.data(), arr.size()); }},
+        {"Iterative Quick Sort", [](vector<double>& arr){ quickSortIterative(arr, 0, arr.size() - 1); }},
+        {"Recursive Quick Sort", [](vector<double>& arr){ quickSortRecursive(arr, 0, arr.size() - 1); }}
     };
 
     for (const auto& sorter : sorters)
